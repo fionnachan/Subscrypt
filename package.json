@@ -1,0 +1,56 @@
+{
+  "name": "algorand-wallet-walletconnect-redux",
+  "version": "0.1.0",
+  "private": true,
+  "homepage": "https://fionnachan.github.io/algorand-wallet-walletconnect-redux/",
+  "dependencies": {
+    "@json-rpc-tools/utils": "^1.7.6",
+    "@reduxjs/toolkit": "^1.6.2",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^11.1.0",
+    "@testing-library/user-event": "^12.1.10",
+    "@walletconnect/client": "^1.6.6",
+    "@xbacked-dao/algorand-wallet-select": "^0.1.0",
+    "algorand-walletconnect-qrcode-modal": "^1.6.1",
+    "algosdk": "^1.12.0",
+    "evergreen-ui": "^6.6.1",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-redux": "^7.2.6",
+    "react-scripts": "4.0.3",
+    "redux-thunk": "^2.4.0",
+    "typescript": "^4.4.4",
+    "web-vitals": "^1.0.1"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.35",
+    "@types/react-dom": "^17.0.11",
+    "@types/react-redux": "^7.1.20",
+    "redux-devtools": "^3.7.0",
+    "redux-devtools-extension": "^2.13.9"
+  }
+}
