@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit'
-import walletConnectReducer from '../features/walletConnectSlice';
+import walletReducer from '../features/walletSlice';
 import applicationReducer from '../features/applicationSlice';
 
 const store = configureStore({
   reducer: {
-    walletConnect: walletConnectReducer,
+    wallet: walletReducer,
     application: applicationReducer,
   },
   preloadedState: {

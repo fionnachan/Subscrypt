@@ -1,19 +1,10 @@
 import AssetRow from "./AssetRow";
 import { IAssetData } from "../helpers/types";
+import { getAlgoAssetData } from "./Wallet/utils";
 
 const AccountAssets = (props: { assets: IAssetData[] }) => {
   const { assets } = props;
-
-  const nativeCurrency = assets.find((asset: IAssetData) => asset && asset.id === 0) || {
-    id: 0,
-    amount: BigInt(0),
-    creator: "",
-    frozen: false,
-    decimals: 6,
-    name: "Algo",
-    unitName: "Algo",
-  };
-
+  const nativeCurrency = getAlgoAssetData(assets);
   const tokens = assets.filter((asset: IAssetData) => asset && asset.id !== 0);
 
   return (

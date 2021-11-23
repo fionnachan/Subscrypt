@@ -1,11 +1,11 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import WalletConnect from "@walletconnect/client";
 import QRCodeModal from "algorand-walletconnect-qrcode-modal";
-import MyAlgo, { Accounts } from "@randlabs/myalgo-connect";
+import MyAlgo from "@randlabs/myalgo-connect";
 import { apiGetAccountAssets, ChainType } from "../helpers/api";
 import { IAssetData } from "../helpers/types";
 
-interface WalletConnectState {
+interface WalletState {
   chain: ChainType,
   walletType: string,
   accounts: string[],
@@ -25,7 +25,7 @@ const initialState = {
   connected: false,
   connector: null,
   fetching: false,
-} as WalletConnectState;
+} as WalletState;
 
 const getWalletConnect = () => new WalletConnect({
   bridge: "https://bridge.walletconnect.org",
@@ -42,8 +42,8 @@ export const getAccountAssets = createAsyncThunk("walletConnect/getAccountAssets
   return response;
 })
 
-export const walletConnectSlice = createSlice({
-    name: 'walletConnect',
+export const walletSlice = createSlice({
+    name: 'wallet',
     initialState,
     reducers: {
       setFetching(state, action) {
@@ -95,7 +95,7 @@ export const walletConnectSlice = createSlice({
           if (state.walletType === "walletConnect") {
             (state.connector as WalletConnect).killSession();
           } else if (state.walletType === "myAlgo" || state.walletType === "algoSigner") {
-            walletConnectSlice.caseReducers.reset(state);
+            walletSlice.caseReducers.reset(state);
           }
         }
       }
@@ -107,13 +107,13 @@ export const walletConnectSlice = createSlice({
     }
 });
 
-export const selectWalletType = (state: any) => state.walletConnect && state.walletConnect.walletType;
-export const selectFetching = (state: any) => state.walletConnect && state.walletConnect.fetching;
-export const selectChain = (state: any) => state.walletConnect && state.walletConnect.chain;
-export const selectConnected = (state: any) => state.walletConnect && state.walletConnect.connected;
-export const selectConnector = (state: any) => state.walletConnect && state.walletConnect.connector;
-export const selectAssets = (state: any) => state.walletConnect && state.walletConnect.assets;
-export const selectAddress = (state: any) => state.walletConnect && state.walletConnect.address;
+export const selectWalletType = (state: any) => state.wallet && state.wallet.walletType;
+export const selectFetching = (state: any) => state.wallet && state.wallet.fetching;
+export const selectChain = (state: any) => state.wallet && state.wallet.chain;
+export const selectConnected = (state: any) => state.wallet && state.wallet.connected;
+export const selectConnector = (state: any) => state.wallet && state.wallet.connector;
+export const selectAssets = (state: any) => state.wallet && state.wallet.assets;
+export const selectAddress = (state: any) => state.wallet && state.wallet.address;
 
 export const {
   setFetching,
@@ -124,6 +124,6 @@ export const {
   setConnected,
   setAccounts,
   killSession
-} = walletConnectSlice.actions;
+} = walletSlice.actions;
 
-export default walletConnectSlice.reducer;
+export default walletSlice.reducer;

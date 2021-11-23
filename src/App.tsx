@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from 'react-redux';
 
 import './App.css';
 import SiteHeader from './components/SiteHeader';
-import { selectWalletType, setWalletType, walletInit } from './features/walletConnectSlice';
+import { selectConnected, selectWalletType, setWalletType, walletInit } from './features/walletSlice';
 import { selectIsModalOpen, setIsModalOpen } from './features/applicationSlice';
 import SiteBody from './components/SiteBody';
 import algowallet from "./assets/algorandwallet.svg";
@@ -14,15 +14,32 @@ import algosigner from "./assets/algosigner.svg";
 const App: React.FC = () => {
   const isModalOpen = useSelector(selectIsModalOpen);
   const walletType = useSelector(selectWalletType);
+  const connected = useSelector(selectConnected);
   const dispatch = useDispatch();
   const setWalletAndConnect = (walletName: string) =>
       dispatch(setWalletType(walletName));
+
+  useEffect(() => {
+    // auto-detect is user has connected their wallet to the app
+    if (window.localStorage.getItem("walletconnect") != null) {
+      dispatch(setWalletType("walletConnect"));
+    }
+    if (typeof (window as any).AlgoSigner !== 'undefined') {
+      dispatch(setWalletType("algoSigner"));
+    }
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (walletType.length > 0) {
       dispatch(walletInit());
     }
   }, [walletType]);
+
+  useEffect(() => {
+    if (connected) {
+      dispatch(setIsModalOpen(false));
+    }
+  }, [connected]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <div>

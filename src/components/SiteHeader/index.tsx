@@ -1,79 +1,46 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Button, Select } from 'evergreen-ui';
-import { Accounts } from "@randlabs/myalgo-connect";
 
 import { ellipseAddress, formatBigNumWithDecimals } from '../../helpers/utilities';
-import { IAssetData } from '../../helpers/types';
-import { setConnected, killSession, selectConnector, selectAssets, selectAddress, getAccountAssets, selectChain, selectConnected, switchChain, setFetching, selectFetching, setWalletType, selectWalletType, setAccounts } from '../../features/walletConnectSlice';
+import { killSession, selectConnector, selectAssets, selectAddress, getAccountAssets, selectChain, selectConnected, switchChain, setFetching, selectFetching, setWalletType, selectWalletType, setAccounts } from '../../features/walletSlice';
 import { setIsModalOpen } from '../../features/applicationSlice';
 import { ChainType } from '../../helpers/api';
-import { subscribeToEvents } from '../Wallet/utils';
+import { getAlgoAssetData, setAccountsAtConnection, subscribeToEvents } from '../Wallet/utils';
 
 const SiteHeader: React.FC = () => {
   const loading = useSelector(selectFetching);
   const connector = useSelector(selectConnector);
-  const connected = useSelector(selectConnected);
   const assets = useSelector(selectAssets);
   const address = useSelector(selectAddress);
   const chain = useSelector(selectChain);
   const walletType = useSelector(selectWalletType);
-  let nativeCurrency = assets && assets.find((asset: IAssetData) => asset && asset.id === 0);
-  if (nativeCurrency === undefined || nativeCurrency == null) {
-    nativeCurrency = {
-      id: 0,
-      amount: BigInt(0),
-      creator: "",
-      frozen: false,
-      decimals: 6,
-      name: "Algo",
-      unitName: "Algo",
-    };
-  }
+  const nativeCurrency = getAlgoAssetData(assets);
 
   const dispatch = useDispatch();
 
   useEffect(() => {
-    if (window.localStorage.getItem("walletconnect") != null) {
-      dispatch(setWalletType("walletConnect"));
-    }
-    if (typeof (window as any).AlgoSigner !== 'undefined') {
-      dispatch(setWalletType("algoSigner"));
-    }
-  }, []); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
-    if (connected) {
-      dispatch(setIsModalOpen(false));
-    }
-  }, [connected]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  useEffect(() => {
     // Check if connection is already established
-    console.log(walletType, "connector", connector)
     if (!connector) {
       return;
     }
     if (walletType === "walletConnect") {
-      subscribeToEvents(connector, dispatch);
+      subscribeToEvents(dispatch)(connector);
       if (!connector.connected) {
         connector.createSession();
-        dispatch(setConnected(true));
       }
       const { accounts } = connector;
-      dispatch(setAccounts(accounts));   
+      setAccountsAtConnection(dispatch)(accounts);
     }
     if (walletType === "myAlgo") {
-      connector.connect().then((accounts: Accounts[]) => {
-        dispatch(setAccounts(accounts));
-        dispatch(setConnected(true));
+      connector.connect().then((accounts: []) => {
+        setAccountsAtConnection(dispatch)(accounts);
       });
     }
     if (walletType === "algoSigner") {
-      dispatch(setConnected(true));
       connector.accounts({ledger: chain})
         .then((accounts: []) => {
-          dispatch(setAccounts(accounts));
+          setAccountsAtConnection(dispatch)(accounts);
         });
     }
   }, [connector]); // eslint-disable-line react-hooks/exhaustive-deps

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { selectAssets, selectFetching } from '../../features/walletConnectSlice';
+import { selectAssets, selectFetching } from '../../features/walletSlice';
 import AccountAssets from '../AccountAssets';
 import LoadingIcon from '../LoadingIcon';
 

@@ -1,8 +1,9 @@
 import WalletConnect from '@walletconnect/client';
 import { Dispatch } from 'react';
-import { reset, setAccounts } from '../../features/walletConnectSlice';
+import { reset, setAccounts, setConnected } from '../../features/walletSlice';
+import { IAssetData } from '../../helpers/types';
 
-export const subscribeToEvents = (connector: WalletConnect, dispatch: Dispatch<any>) => {
+export const subscribeToEvents = (dispatch: Dispatch<any>) => (connector: WalletConnect) => {
   if (!connector) {
     return;
   }
@@ -32,4 +33,25 @@ export const subscribeToEvents = (connector: WalletConnect, dispatch: Dispatch<a
     }
     dispatch(reset());
   });
+}
+
+export const setAccountsAtConnection = (dispatch: Dispatch<any>) => (accounts: []) => {
+  dispatch(setAccounts(accounts));
+  dispatch(setConnected(true));
+}
+
+export const getAlgoAssetData = (assets: IAssetData[]) => {
+  let nativeCurrency = assets && assets.find((asset: IAssetData) => asset && asset.id === 0);
+  if (nativeCurrency === undefined || nativeCurrency == null) {
+    nativeCurrency = {
+      id: 0,
+      amount: BigInt(0),
+      creator: "",
+      frozen: false,
+      decimals: 6,
+      name: "Algo",
+      unitName: "Algo",
+    };
+  }
+  return nativeCurrency;
 }
