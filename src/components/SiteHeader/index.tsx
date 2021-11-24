@@ -68,13 +68,16 @@ const SiteHeader: React.FC = () => {
           </Link>
         </div>
         {!address ?
-          <Button onClick={() => dispatch(setIsModalOpen(true))}>
+          <Button
+            appearance="primary"
+            onClick={() => dispatch(setIsModalOpen(true))}
+          >
             Connect Wallet
           </Button>
         : <div className="header-address-info">
-            {loading ? null : <span>
+            {/* {loading ? null : <span>
               {formatBigNumWithDecimals(nativeCurrency.amount, nativeCurrency.decimals)} {nativeCurrency.unitName || "units"}
-            </span>}
+            </span>} */}
             <span className="header-account">{ellipseAddress(address)}</span>
             <Button
               className="disconnect-button"

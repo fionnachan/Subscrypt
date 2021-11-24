@@ -7,6 +7,7 @@ const theme = {
       display: "Rubik, sans-serif",
     },
     components: {
+      ...(defaultTheme as any).components,
       Button: button,
     },
 };

@@ -11,7 +11,7 @@ import './App.css';
 import SiteHeader from './components/SiteHeader';
 import { selectConnected, selectWalletType, setWalletType, walletInit } from './features/walletSlice';
 import { selectIsModalOpen, setIsModalOpen } from './features/applicationSlice';
-import SiteBody from './components/SiteBody';
+import Home from './components/SiteBody/home';
 import algowallet from "./assets/algorandwallet.svg";
 import myalgo from "./assets/myalgo.svg";
 import algosigner from "./assets/algosigner.svg";
@@ -48,9 +48,11 @@ const App: React.FC = () => {
   return (
     <div className="site-layout">
       <SiteHeader/>
-      <Routes>
-        <Route index element={<SiteBody/>} />
-      </Routes>
+      <div className="site-body">
+        <Routes>
+          <Route index element={<Home/>} />
+        </Routes>
+      </div>
       <div className="footer">Subscrypt ©2021 Created with 💖</div>
       <Dialog
         isShown={isModalOpen}
@@ -58,15 +60,15 @@ const App: React.FC = () => {
         hasFooter={false}
         onCloseComplete={() => dispatch(setIsModalOpen(false))}
       >
-        <Button className="wallet-button" onClick={() => dispatch(setWalletAndConnect("walletConnect"))}>
+        <Button className="wallet-button" appearance="minimal" onClick={() => dispatch(setWalletAndConnect("walletConnect"))}>
           <img className="wallet-icon" src={algowallet} alt="Algorand wallet"/>
           <span>Algorand Wallet</span>
         </Button>
-        <Button className="wallet-button" onClick={() => dispatch(setWalletAndConnect("myAlgo"))}>
+        <Button className="wallet-button" appearance="minimal" onClick={() => dispatch(setWalletAndConnect("myAlgo"))}>
           <img className="wallet-icon" src={myalgo} alt="MyAlgo Wallet" />
           <span>My Algo Wallet</span>
         </Button>
-        <Button className="wallet-button" onClick={() => dispatch(setWalletAndConnect("algoSigner"))}>
+        <Button className="wallet-button" appearance="minimal" onClick={() => dispatch(setWalletAndConnect("algoSigner"))}>
           <img className="wallet-icon" src={algosigner} alt="AlgoSigner" />
           <span>AlgoSigner</span>
         </Button>

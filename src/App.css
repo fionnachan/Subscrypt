@@ -3,6 +3,8 @@
   --max-width-content: 600px;
   --blue: #0763d6;
   --blue-light: #3c90f7;
+  --blue-lighter: #6cc0f7;
+  --blue-lightest: #e4f3ff;
   --font-family: 'Rubik', sans-serif;
   --font-size-xxl: 1.5rem;
   --font-size-xl: 1.25rem;
@@ -106,10 +108,12 @@ h1, h2, h3 {
 
 .header-address-info .header-account {
   line-height: 1;
+  color: var(--blue);
   font-size: var(--font-size-s);
   padding: var(--space-s);
-  border: 1px solid;
+  border: 2px solid var(--blue);
   border-radius: 4px;
+  cursor: default;
 }
 
 .header-address-info .disconnect-button span {
@@ -168,7 +172,7 @@ h1, h2, h3 {
   color: var(--blue);
   font-size: var(--font-size-xl);
   font-weight: 500;
-  background: rgb(228 245 255);
+  background: var(--blue-lightest);
   text-decoration: none;
   padding: var(--space-m) var(--space-xxl);
   border: 2px solid;
@@ -190,13 +194,6 @@ h1, h2, h3 {
   transition: color 0.3s;
 }
 
-.footer a:hover {
-  color: transparent;
-  background: linear-gradient(159deg, rgba(51,49,213,1) 0%, rgba(253,45,170,1) 50%);
-  background-clip: text;
-  -webkit-background-clip: text;
-}
-
 .icon {
   width: 20px;
   height: 20px;
@@ -205,8 +202,8 @@ h1, h2, h3 {
 .loading-icon {
   display: block;
   position: relative;
-  width: 2rem;
-  height: 2rem;
+  width: 2.5rem;
+  height: 2.5rem;
   margin: var(--space-xxxl) auto;
 }
 
@@ -218,9 +215,9 @@ h1, h2, h3 {
     height: 2.5rem;
     top: 0;
     left: 0;
-    border: 4px solid #aacc99;
+    border: .25rem solid var(--blue);
     border-radius: 50%;
-    border-top: 4px solid var(--color-hunter-green);
+    border-top: .25rem solid transparent;
     -webkit-animation: spin 2s linear infinite; /* Safari */
     animation: spin 2s linear infinite;
 }
@@ -241,4 +238,8 @@ h1, h2, h3 {
   100% {
       transform: rotate(360deg);
   }
+}
+
+[role="dialog"] > div > button {
+  border: none !important;
 }
