@@ -1,4 +1,7 @@
 import React from 'react';
+import {
+  BrowserRouter as Router
+} from "react-router-dom";
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux'
 
@@ -6,11 +9,17 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import store from './store';
+import { ThemeProvider } from 'evergreen-ui';
+import theme from './theme';
 
 const renderApp = () => ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <ThemeProvider value={theme}>
+        <Router>
+          <App/>
+        </Router>
+      </ThemeProvider>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root')

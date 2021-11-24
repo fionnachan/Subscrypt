@@ -1,8 +1,7 @@
 {
-  "name": "algorand-wallet-walletconnect-redux",
+  "name": "Subscrypt",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://fionnachan.github.io/algorand-wallet-walletconnect-redux/",
   "dependencies": {
     "@json-rpc-tools/utils": "^1.7.6",
     "@reduxjs/toolkit": "^1.6.2",
@@ -17,6 +16,7 @@
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-redux": "^7.2.6",
+    "react-router-dom": "^6.0.2",
     "react-scripts": "4.0.3",
     "redux-thunk": "^2.4.0",
     "typescript": "^4.4.4",
@@ -50,6 +50,7 @@
     "@types/react": "^17.0.35",
     "@types/react-dom": "^17.0.11",
     "@types/react-redux": "^7.1.20",
+    "@types/react-router-dom": "^5.3.2",
     "redux-devtools": "^3.7.0",
     "redux-devtools-extension": "^2.13.9"
   }

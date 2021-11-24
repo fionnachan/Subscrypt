@@ -1,4 +1,9 @@
 import React, { useEffect } from 'react';
+import {
+  Routes,
+  Route,
+  Link
+} from "react-router-dom";
 import { Button, Dialog } from 'evergreen-ui';
 import { useDispatch, useSelector } from 'react-redux';
 
@@ -23,8 +28,7 @@ const App: React.FC = () => {
     // auto-detect is user has connected their wallet to the app
     if (window.localStorage.getItem("walletconnect") != null) {
       dispatch(setWalletType("walletConnect"));
-    }
-    if (typeof (window as any).AlgoSigner !== 'undefined') {
+    } else if (typeof (window as any).AlgoSigner !== 'undefined') {
       dispatch(setWalletType("algoSigner"));
     }
   }, []); // eslint-disable-line react-hooks/exhaustive-deps
@@ -42,31 +46,31 @@ const App: React.FC = () => {
   }, [connected]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
-    <div>
-      <div className="site-layout">
-        <SiteHeader/>
-        <SiteBody/>
-        <div className="footer">Subscrypt ©2021 Created with 💖</div>
-        <Dialog
-          isShown={isModalOpen}
-          title="Connect to a wallet"
-          hasFooter={false}
-          onCloseComplete={() => dispatch(setIsModalOpen(false))}
-        >
-          <Button className="wallet-button" onClick={() => dispatch(setWalletAndConnect("walletConnect"))}>
-            <img className="wallet-icon" src={algowallet} alt="Algorand wallet"/>
-            <span>Algorand Wallet</span>
-          </Button>
-          <Button className="wallet-button" onClick={() => dispatch(setWalletAndConnect("myAlgo"))}>
-            <img className="wallet-icon" src={myalgo} alt="MyAlgo Wallet" />
-            <span>My Algo Wallet</span>
-          </Button>
-          <Button className="wallet-button" onClick={() => dispatch(setWalletAndConnect("algoSigner"))}>
-            <img className="wallet-icon" src={algosigner} alt="AlgoSigner" />
-            <span>AlgoSigner</span>
-          </Button>
-        </Dialog>
-      </div>
+    <div className="site-layout">
+      <SiteHeader/>
+      <Routes>
+        <Route index element={<SiteBody/>} />
+      </Routes>
+      <div className="footer">Subscrypt ©2021 Created with 💖</div>
+      <Dialog
+        isShown={isModalOpen}
+        title="Connect to a wallet"
+        hasFooter={false}
+        onCloseComplete={() => dispatch(setIsModalOpen(false))}
+      >
+        <Button className="wallet-button" onClick={() => dispatch(setWalletAndConnect("walletConnect"))}>
+          <img className="wallet-icon" src={algowallet} alt="Algorand wallet"/>
+          <span>Algorand Wallet</span>
+        </Button>
+        <Button className="wallet-button" onClick={() => dispatch(setWalletAndConnect("myAlgo"))}>
+          <img className="wallet-icon" src={myalgo} alt="MyAlgo Wallet" />
+          <span>My Algo Wallet</span>
+        </Button>
+        <Button className="wallet-button" onClick={() => dispatch(setWalletAndConnect("algoSigner"))}>
+          <img className="wallet-icon" src={algosigner} alt="AlgoSigner" />
+          <span>AlgoSigner</span>
+        </Button>
+      </Dialog>
     </div>
   );
 }
