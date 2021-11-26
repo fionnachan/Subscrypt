@@ -15,6 +15,7 @@ import Home from './components/SiteBody/home';
 import algowallet from "./assets/algorandwallet.svg";
 import myalgo from "./assets/myalgo.svg";
 import algosigner from "./assets/algosigner.svg";
+import CreatorHome from './components/Creator/home';
 
 const App: React.FC = () => {
   const isModalOpen = useSelector(selectIsModalOpen);
@@ -51,6 +52,7 @@ const App: React.FC = () => {
       <div className="site-body">
         <Routes>
           <Route index element={<Home/>} />
+          <Route path="creator" element={<CreatorHome/>}/>
         </Routes>
       </div>
       <div className="footer">Subscrypt ©2021 Created with 💖</div>

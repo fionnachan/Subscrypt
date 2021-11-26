@@ -5,7 +5,10 @@
   --blue-light: #3c90f7;
   --blue-lighter: #6cc0f7;
   --blue-lightest: #e4f3ff;
+  --font-family-display: 'Outfit', sans-serif;
   --font-family: 'Rubik', sans-serif;
+  --font-family-mono: 'Ubuntu Mono', source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+  monospace;
   --font-size-xxl: 1.5rem;
   --font-size-xl: 1.25rem;
   --font-size-l: 1.125rem;
@@ -91,7 +94,7 @@ h1, h2, h3 {
   background-clip: text;
   font-size: var(--font-size-xxl);
   font-weight: 500;
-  font-family: 'Outfit', sans-serif;
+  font-family: var(--font-family-display);
 }
 
 .header-address-info {
@@ -100,9 +103,14 @@ h1, h2, h3 {
   align-items: center;
 }
 
-.header-address-info span,
-.header-address-info .disconnect-button {
+.header-address-info span {
   display: inline-flex;
+  margin: 0 0 0 var(--space-s);
+}
+
+.header-address-info .disconnect-button {
+  padding: var(--space-s);
+  border: none !important;
   margin: 0 0 0 var(--space-s);
 }
 

@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { Button } from 'evergreen-ui';
+import { Button, IconButton, Menu, MenuIcon, Popover, Position } from 'evergreen-ui';
 import { Link } from "react-router-dom";
 
 import { ellipseAddress, formatBigNumWithDecimals } from '../../helpers/utilities';
@@ -79,12 +79,20 @@ const SiteHeader: React.FC = () => {
               {formatBigNumWithDecimals(nativeCurrency.amount, nativeCurrency.decimals)} {nativeCurrency.unitName || "units"}
             </span>} */}
             <span className="header-account">{ellipseAddress(address)}</span>
-            <Button
-              className="disconnect-button"
-              onClick={() => dispatch(killSession())}
+            <Popover
+              position={Position.BOTTOM_RIGHT}
+              content={
+                <Menu>
+                  <Menu.Group>
+                    <Menu.Item onSelect={() => dispatch(killSession())}>
+                      Disconnect
+                    </Menu.Item>
+                  </Menu.Group>
+                </Menu>
+              }
             >
-              Disconnect
-            </Button>
+              <IconButton icon={MenuIcon} marginRight={16} appearance="minimal" className="disconnect-button" />
+            </Popover>
         </div>}
       </div>
     </div>
