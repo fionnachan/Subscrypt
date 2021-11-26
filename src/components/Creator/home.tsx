@@ -1,10 +1,24 @@
+import algosdk from 'algosdk';
 import { Button, TextInputField } from 'evergreen-ui';
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
-import { selectConnected } from '../../features/walletSlice';
+import { selectAddress, selectConnected, selectWalletType, selectConnector } from '../../features/walletSlice';
+import { createSubscriptionPlan, setupSubscription } from '../../algorand/contractHelpers';
 
 const CreatorHome: React.FC = () => {
   const connected = useSelector(selectConnected);
+  const address = useSelector(selectAddress);
+  const walletType = useSelector(selectWalletType);
+  const connector = useSelector(selectConnector);
+  const [price, setPrice] = useState(0);
+
+  const createPlan = async() => {
+    
+      const start: number = Math.floor(new Date().getTime()/1000 + 5*60*1000); // 5 mins from clicking button
+      const subscriptionId = await createSubscriptionPlan(price, start, address, walletType, connector);
+
+      await setupSubscription(subscriptionId, address, walletType, connector);
+  }
 
   return (
     <>
@@ -23,8 +37,10 @@ const CreatorHome: React.FC = () => {
         <TextInputField
           label="Monthly Price"
           description="This is how much your subscribers should pay every month."
+          onChange={(event: any) => setPrice(event.target.value)}
+          value={price}
         />
-        <Button appearance="primary">Create Plan</Button>
+        <Button appearance="primary" onClick={createPlan}>Create Plan</Button>
       </div>
     </>
   );
