@@ -22,7 +22,7 @@ const CreatorHome: React.FC = () => {
 
   return (
     <>
-      <div className="site-body-inner">
+      <div className="site-body-inner form-wrapper">
         <h2>
           Create Subscription Plan
         </h2>

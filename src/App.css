@@ -6,6 +6,12 @@
   --blue-lighter: #6cc0f7;
   --blue-lightest: #e4f3ff;
   --grey-darkest: #333333;
+  --grey-darker: #666666;
+  --grey-dark: #888888;
+  --grey: #aaaaaa;
+  --grey-light: #cccccc;
+  --grey-lighter: #dddddd;
+  --grey-lightest: #efefef;
   --font-family-display: 'Outfit', sans-serif;
   --font-family: 'Rubik', sans-serif;
   --font-family-mono: 'Ubuntu Mono', source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
@@ -26,6 +32,8 @@
   --space-xs: 0.375rem;
   --space-xxs: 0.25rem;
   --space-xxxs: 0.125rem;
+  --border-radius-large: 6px;
+  --border-radius: 4px;
 }
 
 @media (min-width: 1281px) {
@@ -258,6 +266,21 @@ h1, h2, h3 {
   border: none !important;
 }
 
+.form-wrapper label {
+  font-size: var(--font-size-m) !important;
+  margin-bottom: var(--space-xxxs);
+}
+
+.form-wrapper label + p {
+  font-size: var(--font-size-s) !important;
+  margin-bottom: var(--space-xxxs);
+}
+
+.form-wrapper input {
+  height: auto !important;
+  font-size: var(--font-size-m) !important;
+}
+
 .form-row {
   display: flex;
   align-items: flex-end;
@@ -268,7 +291,7 @@ h1, h2, h3 {
 }
 
 .form-row span {
-  font-size: var(--font-size-s);
+  font-size: var(--font-size-m);
   margin-left: var(--space-s);
-  margin-bottom: 24px;
+  margin-bottom: var(--space-xxl);
 }
