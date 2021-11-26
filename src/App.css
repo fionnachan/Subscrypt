@@ -1,10 +1,11 @@
 :root {
   --max-width: 1200px;
-  --max-width-content: 600px;
+  --max-width-content: 560px;
   --blue: #0763d6;
   --blue-light: #3c90f7;
   --blue-lighter: #6cc0f7;
   --blue-lightest: #e4f3ff;
+  --grey-darkest: #333333;
   --font-family-display: 'Outfit', sans-serif;
   --font-family: 'Rubik', sans-serif;
   --font-family-mono: 'Ubuntu Mono', source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
@@ -103,6 +104,11 @@ h1, h2, h3 {
   align-items: center;
 }
 
+.header-address-info .wallet-amount {
+  color: var(--grey-darkest);
+  font-size: var(--font-size-s);
+}
+
 .header-address-info span {
   display: inline-flex;
   margin: 0 0 0 var(--space-s);
@@ -157,7 +163,7 @@ h1, h2, h3 {
   flex: 1 0 auto;
   width: 100%;
   max-width: var(--max-width-content);
-  padding: var(--space-xxxxl) var(--space-xxl);
+  padding: var(--space-xxxxl) var(--space-l) var(--space-m);
 }
 
 .site-body .desc {
@@ -171,7 +177,7 @@ h1, h2, h3 {
   padding: var(--space-xxl) var(--space-xxxl);
   border-radius: 10px;
   box-shadow: 0 10px 40px rgba(255,255,255,0.6);
-  margin: var(--space-xxxl) auto;
+  margin: 0 auto;
 }
 
 .role-button {
@@ -250,4 +256,19 @@ h1, h2, h3 {
 
 [role="dialog"] > div > button {
   border: none !important;
+}
+
+.form-row {
+  display: flex;
+  align-items: flex-end;
+}
+
+.form-row > div {
+  flex: 1 1 100%;
+}
+
+.form-row span {
+  font-size: var(--font-size-s);
+  margin-left: var(--space-s);
+  margin-bottom: 24px;
 }

@@ -98,6 +98,6 @@ export function capitalize(string: string): string {
     const wholeUnits = num / singleUnit;
     const fractionalUnits = num % singleUnit;
   
-    return wholeUnits.toString() + "." + fractionalUnits.toString().padStart(4, "0");
+    return wholeUnits.toString() + "." + fractionalUnits.toString().padStart(decimals, "0");
   }
   

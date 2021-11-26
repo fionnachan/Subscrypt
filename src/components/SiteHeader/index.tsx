@@ -75,9 +75,9 @@ const SiteHeader: React.FC = () => {
             Connect Wallet
           </Button>
         : <div className="header-address-info">
-            {/* {loading ? null : <span>
+            {loading ? null : <span className="wallet-amount">
               {formatBigNumWithDecimals(nativeCurrency.amount, nativeCurrency.decimals)} {nativeCurrency.unitName || "units"}
-            </span>} */}
+            </span>}
             <span className="header-account">{ellipseAddress(address)}</span>
             <Popover
               position={Position.BOTTOM_RIGHT}

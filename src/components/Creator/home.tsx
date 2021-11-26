@@ -1,5 +1,5 @@
 import algosdk from 'algosdk';
-import { Button, TextInputField } from 'evergreen-ui';
+import { Button, TextareaField, TextInputField } from 'evergreen-ui';
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { selectAddress, selectConnected, selectWalletType, selectConnector } from '../../features/walletSlice';
@@ -27,19 +27,22 @@ const CreatorHome: React.FC = () => {
           Create Subscription Plan
         </h2>
         <TextInputField
-          label="Name"
+          label="Plan"
           description="Enter your subscription plan name."
         />
-        <TextInputField
+        <TextareaField
           label="Description"
           description="Let your supporters know what you are offering them."
         />
-        <TextInputField
-          label="Monthly Price"
-          description="This is how much your subscribers should pay every month."
-          onChange={(event: any) => setPrice(event.target.value)}
-          value={price}
-        />
+        <div className="form-row">
+          <TextInputField
+            label="Monthly Price"
+            description="This is how much your subscribers should pay every month."
+            onChange={(event: any) => setPrice(event.target.value)}
+            value={price}
+          />
+          <span>Algo</span>
+        </div>
         <Button appearance="primary" onClick={createPlan}>Create Plan</Button>
       </div>
     </>
