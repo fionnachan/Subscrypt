@@ -1,6 +1,9 @@
 :root {
   --max-width: 1200px;
   --max-width-content: 560px;
+  --blue-darkest: #071376;
+  --blue-darker: #072396;
+  --blue-dark: #0733b6;
   --blue: #0763d6;
   --blue-light: #3c90f7;
   --blue-lighter: #6cc0f7;
@@ -279,6 +282,14 @@ h1, h2, h3 {
 .form-wrapper input {
   height: auto !important;
   font-size: var(--font-size-m) !important;
+}
+
+.form-wrapper .reminder-text {
+  text-align: center;
+}
+
+.form-wrapper textarea {
+  resize: vertical;
 }
 
 .form-row {

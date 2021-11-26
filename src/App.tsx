@@ -4,13 +4,13 @@ import {
   Route,
   Link
 } from "react-router-dom";
-import { Button, Dialog } from 'evergreen-ui';
+import { Button, CornerDialog, Dialog } from 'evergreen-ui';
 import { useDispatch, useSelector } from 'react-redux';
 
 import './App.css';
 import SiteHeader from './components/SiteHeader';
 import { selectConnected, selectWalletType, setWalletType, walletInit } from './features/walletSlice';
-import { selectIsModalOpen, setIsModalOpen } from './features/applicationSlice';
+import { selectIsModalOpen, selectIsNotificationOpen, selectNotificationContent, selectNotificationTitle, setIsModalOpen, setIsNotificationOpen } from './features/applicationSlice';
 import Home from './components/SiteBody/home';
 import algowallet from "./assets/algorandwallet.svg";
 import myalgo from "./assets/myalgo.svg";
@@ -19,6 +19,9 @@ import CreatorHome from './components/Creator/home';
 
 const App: React.FC = () => {
   const isModalOpen = useSelector(selectIsModalOpen);
+  const notificationTitle = useSelector(selectNotificationTitle);
+  const notificationContent = useSelector(selectNotificationContent);
+  const isNotificationOpen = useSelector(selectIsNotificationOpen);
   const walletType = useSelector(selectWalletType);
   const connected = useSelector(selectConnected);
   const dispatch = useDispatch();
@@ -75,6 +78,14 @@ const App: React.FC = () => {
           <span>AlgoSigner</span>
         </Button>
       </Dialog>
+      <CornerDialog
+        title={notificationTitle}
+        isShown={isNotificationOpen}
+        onCloseComplete={() => dispatch(setIsNotificationOpen(false))}
+        hasFooter={false}
+      >
+        {notificationContent}
+      </CornerDialog>
     </div>
   );
 }

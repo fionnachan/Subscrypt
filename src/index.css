@@ -14,3 +14,15 @@ code {
 * {
   box-sizing: border-box;
 }
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+ 
+::-webkit-scrollbar-track {
+  background-color: var(--blue-lightest);
+}
+ 
+::-webkit-scrollbar-thumb {
+  background-color: var(--blue-dark);
+}

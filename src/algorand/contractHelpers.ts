@@ -236,8 +236,11 @@ export async function setupSubscription(appId: number, address: string, walletTy
     const signed = await sign(grouped, walletType, connector)
 
     const result = await sendWait(signed)
-
+    
     if(result['pool-error']) throw new Error("Failed to setup subscription: "+result['pool-error'])
+
+    return result;
+
 }
 
 // Close out the subscription by deleting the application

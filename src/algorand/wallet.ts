@@ -21,6 +21,16 @@ export async function sign(txns: Transaction[], walletType: string, connector: a
     let result: string[] = [];
     if (walletType === "walletConnect") {
       result = await connector.sendCustomRequest(request);
+      return result.map((element, idx) => {
+        console.log("Element: ", element)
+        return element ? {
+            txID: txns[idx].txID(), 
+            blob: new Uint8Array(Buffer.from(element, "base64"))
+          } : {
+            txID:txns[idx].txID(), 
+            blob:new Uint8Array()
+          };
+      });
     } else if (walletType === "myAlgo") {
       result = await connector.signTransaction([txnsToSign]);
     } else if (walletType === "algoSigner") {
