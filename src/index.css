@@ -26,3 +26,13 @@ code {
 ::-webkit-scrollbar-thumb {
   background-color: var(--blue-dark);
 }
+
+::selection {
+  color: var(--blue-darkest);
+  background: var(--blue-lightest); /* WebKit/Blink Browsers */
+}
+
+::-moz-selection {
+  color: var(--blue-darkest);
+  background: var(--blue-lightest); /* Gecko Browsers */
+}

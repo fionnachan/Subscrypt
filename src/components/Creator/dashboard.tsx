@@ -65,10 +65,10 @@ const CreatorDashboard: React.FC = () => {
           connected ? 
           <Table>
             <Table.Head>
-              <Table.SearchHeaderCell />
-              <Table.TextHeaderCell>Active Subscription Plan</Table.TextHeaderCell>
+              <Table.TextHeaderCell>Plan ID</Table.TextHeaderCell>
+              <Table.TextHeaderCell>Plan</Table.TextHeaderCell>
               <Table.TextHeaderCell>Details</Table.TextHeaderCell>
-              <Table.TextHeaderCell>Subscribers</Table.TextHeaderCell>
+              {/* <Table.TextHeaderCell>Subscribers</Table.TextHeaderCell> */}
               <Table.TextHeaderCell>Monthly Price</Table.TextHeaderCell>
               <Table.TextHeaderCell>Actions</Table.TextHeaderCell>
             </Table.Head>
@@ -78,7 +78,7 @@ const CreatorDashboard: React.FC = () => {
                   <Table.TextCell>{plan.appId}</Table.TextCell>
                   <Table.TextCell>{plan.globalState.plan_name}</Table.TextCell>
                   <Table.TextCell>{plan.globalState.plan_desc}</Table.TextCell>
-                  <Table.TextCell isNumber>{plan.globalState.numOfSubscribers || 0}</Table.TextCell>
+                  {/* <Table.TextCell isNumber>{plan.globalState.numOfSubscribers || 0}</Table.TextCell> */}
                   <Table.TextCell isNumber>{algosdk.microalgosToAlgos(plan.globalState.plan_monthly_price.i)} Algo</Table.TextCell>
                   <Table.TextCell>
                     <Button size="small" onClick={() => deletePlan(plan.appId)}>Delete</Button>

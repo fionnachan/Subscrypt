@@ -48,11 +48,6 @@ interface Obj {
 export function StateToObj(sd: State[]): Obj {
     const obj = {} as Obj
 
-    // Start with empty set
-    Object.values(StateKeys).forEach((k)=>{
-        obj[k] = {i:0, b: new Uint8Array()}
-    })
-
     for(const idx in sd){
         const key = Buffer.from(sd[idx].key, 'base64').toString()
 
@@ -104,7 +99,7 @@ function getIndexerClient(): algosdk.Indexer {
 }
 
 // Get the application by id and construct a Subscription obj using the global-state
-export async function getSubscription(appId: number): Promise<Subscription> {
+export async function getSubscriptionPlan(appId: number): Promise<Subscription> {
     const client = getAlgodClient()
     const app = await client.getApplicationByID(appId).do()
     return Subscription.fromState(appId, app['params']['global-state'])
@@ -145,7 +140,7 @@ export async function subscribePlan(appId: number, amt: number, address: string,
     const client  = getAlgodClient()
 
     // Get the latest info for the subscription
-    const subscription = await getSubscription(appId)
+    const subscription = await getSubscriptionPlan(appId)
 
     // Get the supporter's account
     const addr = address
@@ -170,27 +165,32 @@ export async function subscribePlan(appId: number, amt: number, address: string,
         addr, sp, appId, appArgs
     );
 
-    const txns = [app_opt_in_txn, pay_txn, app_txn];
+    const txns = [];
+
+    const userHasOptedInApp = await hasOptedInApp(addr, appId);
+
+    if (!userHasOptedInApp) {
+      txns.push(app_opt_in_txn);
+    }
+   
+    txns.push(pay_txn, app_txn);
 
     algosdk.assignGroupID(txns)
 
     const signed = await sign(txns, walletType, connector)
     const result = await sendWait(signed)
 
-    if(result['pool-error']) throw new Error("Place Bid Failed: "+result['pool-error'])
+    if(result['pool-error']) throw new Error("Subscription Failed: "+result['pool-error'])
 
     return result;
 }
 
-async function ensureOptedInApp(addr: string, appId: number) {
+export async function hasOptedInApp(addr: string, appId: number) {
   const client = getAlgodClient()
   const ai = await client.accountInformation(addr).do()
 
-  console.log("account info: ", ai)
-
   // Already opted in
-  // if(ai['apps'].some((a: any)=>{ return a['app-id'] == appId}))
-  //     return
+  return (ai['apps-local-state'].some((a: any)=> a['id'] == appId));
 }
 
 // Creates the subscription withe the parameters passed. 
@@ -211,8 +211,6 @@ export async function createSubscriptionPlan(
 
     // Prepare app args to initialize the subscription
     const addr      = address
-    console.log("addr:", decodeAddress(addr).publicKey)
-    console.log("price:", algosdk.algosToMicroalgos(planPrice))
     const args      = [
         decodeAddress(addr).publicKey,
         new Uint8Array(Buffer.from(creatorName)),
@@ -295,7 +293,6 @@ export async function closeSubscription(appId: number, address: string, walletTy
 // Utility function to block after sending the raw transaction for 3 rounds in this case
 export async function sendWait(signed: SignedTxn[]): Promise<any> {
     const client = getAlgodClient()
-    console.log("signed map?", signed.map((t)=>{return t.blob}))
     const {txId} = await client.sendRawTransaction(signed.map((t)=>{return t.blob})).do()
     const result = await waitForConfirmation(txId, 3)
     return result 
@@ -352,6 +349,22 @@ export async function readLocalState(address: string, appId: number){
             }
         }
     }
+}
+
+export async function getUserSubscribedPlans(address: string) {
+  const client = getAlgodClient()
+  let accountInfoResponse = await client.accountInformation(address).do();
+  const apps = accountInfoResponse['apps-local-state'];
+  const processedAppsDetails: any = [];
+  apps.forEach((app: any) => {
+    const appsKVpairs = StateToObj(app["key-value"]);
+    const processedAppsKVpairs = processObj(appsKVpairs);
+    processedAppsDetails.push({
+      "id": app.id,
+      "local-state": processedAppsKVpairs
+    })
+  });
+  return processedAppsDetails;
 }
 
 // read global state of application

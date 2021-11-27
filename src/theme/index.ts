@@ -1,6 +1,7 @@
 import { defaultTheme } from "evergreen-ui";
 import button from "./button";
 import input from "./input";
+import table from "./table";
 
 const theme = {
     ...defaultTheme,
@@ -13,6 +14,7 @@ const theme = {
       ...(defaultTheme as any).components,
       Button: button,
       Input: input,
+      Table: table,
     },
 };
 
