@@ -1,4 +1,6 @@
-export default {
+import { Config } from "./config";
+
+const testnet_config: Config = {
   "explorer":"algoexplorer.io",
   "algod":{
     "host": "https://testnet.algoexplorerapi.io",
@@ -12,3 +14,5 @@ export default {
   },
   "network":"TestNet"
 }
+
+export default testnet_config;

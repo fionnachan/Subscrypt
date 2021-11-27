@@ -1,8 +1,7 @@
 import React, { useEffect } from 'react';
 import {
   Routes,
-  Route,
-  Link
+  Route
 } from "react-router-dom";
 import { Button, CornerDialog, Dialog } from 'evergreen-ui';
 import { useDispatch, useSelector } from 'react-redux';
@@ -44,7 +43,7 @@ const App: React.FC = () => {
     if (walletType.length > 0) {
       dispatch(walletInit());
     }
-  }, [walletType]);
+  }, [walletType]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (connected) {

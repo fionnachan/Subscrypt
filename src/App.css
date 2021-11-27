@@ -338,3 +338,7 @@ a {
 .form-row span.price {
   margin-left: 0;
 }
+
+[data-evergreen-table-body] > div {
+  overflow: hidden !important;
+}

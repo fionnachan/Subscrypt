@@ -1,12 +1,12 @@
 import Configuration from "./config.testnet";
 
-interface ApiConf {
+export interface ApiConf {
     host: string
     port: number
     token: string
 }
 
-interface Config {
+export interface Config {
     explorer: string
     algod:  ApiConf 
     indexer:  ApiConf

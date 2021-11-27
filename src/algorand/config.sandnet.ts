@@ -1,4 +1,6 @@
-export default {
+import { Config } from "./config";
+
+const sandnet_config: Config = {
   "explorer":"algoexplorer.io",
   "algod":{
     "host": "http://localhost",
@@ -12,3 +14,5 @@ export default {
   },
   "network":"sandnet-v1"
 }
+
+export default sandnet_config;

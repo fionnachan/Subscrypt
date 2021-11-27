@@ -1,6 +1,6 @@
 import { Button, Table } from 'evergreen-ui';
 import React, { useEffect, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { selectAddress, selectConnected, selectWalletType, selectConnector, selectFetching } from '../../features/walletSlice';
 import { getSubscriptionPlan, getUserSubscribedPlans } from '../../algorand/contractHelpers';
 import LoadingIcon from '../LoadingIcon';

@@ -188,7 +188,7 @@ export async function hasOptedInApp(addr: string, appId: number) {
   const ai = await client.accountInformation(addr).do()
 
   // Already opted in
-  return (ai['apps-local-state'].some((a: any)=> a['id'] == appId));
+  return (ai['apps-local-state'].some((a: any)=> a['id'] === appId));
 }
 
 // Creates the subscription withe the parameters passed. 
@@ -340,7 +340,7 @@ export async function readLocalState(address: string, appId: number){
     const client = getAlgodClient()
     let accountInfoResponse = await client.accountInformation(address).do();
     for (let i = 0; i < accountInfoResponse['apps-local-state'].length; i++) { 
-        if (accountInfoResponse['apps-local-state'][i].id == appId) {
+        if (accountInfoResponse['apps-local-state'][i].id === appId) {
             console.log("User's local state:");
             for (let n = 0; n < accountInfoResponse['apps-local-state'][i][`key-value`].length; n++) {
                 console.log(accountInfoResponse['apps-local-state'][i][`key-value`][n]);
@@ -395,7 +395,7 @@ export async function getUserCreatedPlans(address: string){
 function processObj(obj: Obj) {
   const processedObj: any = {};
   for (const [key, value] of Object.entries(obj)) {
-    if (key != "creator" && value.i === 0) {
+    if (key !== "creator" && value.i === 0) {
       processedObj[key] = new TextDecoder().decode(value.b);
     } else {
       processedObj[key] = value;
