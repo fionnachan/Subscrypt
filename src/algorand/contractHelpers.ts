@@ -14,11 +14,11 @@ import programs from "./contract_binaries";
 // The keys to the global state parameters to the application
 export enum StateKeys  {
     creator_key            = "creator",
-    creator_name_key        = "creator_name",
-    plan_name_key        = "plan_name",
-    plan_desc_key        = "plan_desc",
-    plan_monthly_price_key        = "plan_monthly_price",
-    created_on_key        = "created_on",
+    creator_name_key       = "creator_name",
+    plan_name_key          = "plan_name",
+    plan_desc_key          = "plan_desc",
+    plan_monthly_price_key = "plan_monthly_price",
+    created_on_key         = "created_on",
 }
 
 // Represents the global-state and global-state-delta we get back from
@@ -151,8 +151,6 @@ export async function subscribePlan(appId: number, amt: number, address: string,
 
     const sp        = await client.getTransactionParams().do()
 
-    console.log("IN HERE")
-
     const pay_txn   = algosdk.makePaymentTxnWithSuggestedParams(
         addr, appAddr, algosdk.algosToMicroalgos(amt), undefined, undefined, sp
     );
@@ -251,7 +249,7 @@ export async function setupSubscription(appId: number, address: string, walletTy
     const appAddr   = algosdk.getApplicationAddress(appId)
     const fundAmt   = (
         100000 + // min account balance
-        1 * 1000 // 3 * min txn fee
+        1 * 1000 // 1 * min txn fee
     )
 
     const sp        = await client.getTransactionParams().do()

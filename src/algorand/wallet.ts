@@ -1,4 +1,3 @@
-
 import algosdk, {Transaction} from "algosdk"
 import { formatJsonRpcRequest } from "@json-rpc-tools/utils";
 
@@ -6,7 +5,6 @@ export interface SignedTxn {
     txID: string
     blob: Uint8Array
 }
-
 
 export async function sign(txns: Transaction[], walletType: string, connector: any): Promise<SignedTxn[]> {
 
@@ -32,7 +30,7 @@ export async function sign(txns: Transaction[], walletType: string, connector: a
           };
       });
     } else if (walletType === "myAlgo") {
-      result = await connector.signTransaction([txnsToSign]);
+      result = await connector.signTransaction(txnsToSign.map(txn => txn.txn));
     } else if (walletType === "algoSigner") {
       result = await connector.signTxn([txnsToSign]);
     }

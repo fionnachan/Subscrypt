@@ -1,11 +1,12 @@
-import { Button, TextareaField, TextInputField } from 'evergreen-ui';
+import { Button, TextInputField } from 'evergreen-ui';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { selectAddress, selectConnected, selectWalletType, selectConnector, selectFetching } from '../../features/walletSlice';
+import { selectAddress, selectConnected, selectWalletType, selectConnector, selectFetching, setFetching } from '../../features/walletSlice';
 import { getAppGlobalState, StateToObj, subscribePlan } from '../../algorand/contractHelpers';
 import { setIsNotificationOpen, setNotificationContent, setNotificationTitle } from '../../features/applicationSlice';
 import LoadingIcon from '../LoadingIcon';
 import algosdk from 'algosdk';
+import { useNavigate } from 'react-router-dom';
 
 const SubscribeView: React.FC = () => {
   const connected = useSelector(selectConnected);
@@ -19,12 +20,14 @@ const SubscribeView: React.FC = () => {
   const [actualPayAmount, setActualPayAmount] = useState(0);
 
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const subscribe = async() => {
     if (!appId || !months) {
       return;
     }
     const _appId = parseInt(appId);
+    dispatch(setFetching(true));
     await subscribePlan(
             _appId,
             actualPayAmount,
@@ -33,15 +36,17 @@ const SubscribeView: React.FC = () => {
             connector
         )
         .then(result => {
-          console.log("result: ", result)
           dispatch(setIsNotificationOpen(true));
-          dispatch(setNotificationTitle("Subscription Success"))
-          dispatch(setNotificationContent("Confirmed at round "+result["confirmed-round"]))
+          dispatch(setNotificationTitle("Subscription Success"));
+          dispatch(setNotificationContent("Confirmed at round "+result["confirmed-round"]));
+          dispatch(setFetching(false));
+          navigate("/supporter/dashboard");
         })
         .catch(error => {
           dispatch(setIsNotificationOpen(true));
-          dispatch(setNotificationTitle("Subscription Error"))
-          dispatch(setNotificationContent("Please try again."))
+          dispatch(setNotificationTitle("Subscription Error"));
+          dispatch(setNotificationContent("Please try again."));
+          dispatch(setFetching(false));
         });
   }
 

@@ -1,4 +1,4 @@
-import { Button, Table, TextareaField, TextInputField } from 'evergreen-ui';
+import { Button, Table } from 'evergreen-ui';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAddress, selectConnected, selectWalletType, selectConnector, selectFetching } from '../../features/walletSlice';
@@ -15,7 +15,6 @@ const SupporterDashboard: React.FC = () => {
   const connector = useSelector(selectConnector);
   const [plans, setPlans] = useState([]);
 
-  const dispatch = useDispatch();
   useEffect(() => {
     if (!address || !walletType || !connector) {
       return;

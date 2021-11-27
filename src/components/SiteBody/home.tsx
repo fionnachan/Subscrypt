@@ -32,7 +32,7 @@ const Home: React.FC = () => {
               Creators can customise their plans on Subscrypt. Supporters can use their Algorand wallet to pay for the subscription and our smart contracts will handle the rest.
             </p>
             <p className="desc">
-              A decentralised subscription service offers creators a significant amount of freedom on how and where their content will be hosted. Creators can integrate their supporters' Subscrypt status to their own website so that they can utilise the status for providing subscription perks on their own platform.
+              A decentralised subscription service offers creators freedom on how and where their paywalled content will be hosted. Creators can integrate their supporters' Subscrypt status to their own platform for providing perks.
             </p>
             <p className="desc">
               Connect your wallet to try now!
