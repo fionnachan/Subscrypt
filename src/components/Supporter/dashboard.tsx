@@ -27,11 +27,15 @@ const SupporterDashboard: React.FC = () => {
       .then(result => {
           const apps: Promise<Subscription>[] = result.map((app: any, index: number) => getSubscriptionPlan(app.id));
           Promise.all(apps).then(appDetails => {
-            console.log("RESULTS: ", appDetails)
-            result.forEach(async(app: any, index: number) => {
-              result[index]["global-state"] = appDetails.find(_app => app.id === _app.id);
+            const cleanAppDetails = appDetails.filter(_a => _a != null);
+
+            result.forEach((resultItem: any, index: number) => {
+              if (cleanAppDetails.find(_app => resultItem.id === _app.id)) {
+                result[index]["global-state"] = cleanAppDetails.find(_app => resultItem.id === _app.id);
+              }
             });
-            setPlans(result);
+            const finalResult: any = result.filter((_app: Object) => _app.hasOwnProperty("global-state"));
+            setPlans(finalResult);
           })
         });
     }

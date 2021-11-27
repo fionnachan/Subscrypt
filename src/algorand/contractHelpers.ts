@@ -99,10 +99,17 @@ function getIndexerClient(): algosdk.Indexer {
 }
 
 // Get the application by id and construct a Subscription obj using the global-state
-export async function getSubscriptionPlan(appId: number): Promise<Subscription> {
+export async function getSubscriptionPlan(appId: number): Promise<Subscription | null> {
     const client = getAlgodClient()
-    const app = await client.getApplicationByID(appId).do()
-    return Subscription.fromState(appId, app['params']['global-state'])
+    return await client.getApplicationByID(appId).do()
+        .then((app) => {
+          console.log("get sub plan app ", app)
+          return Subscription.fromState(appId, app['params']['global-state'])
+        })
+        .catch((error) => {
+          console.log("error ", error)
+          return null;
+        })
 }
 
 // Use the indexer to get some transactions up to limit
@@ -146,7 +153,7 @@ export async function subscribePlan(appId: number, amt: number, address: string,
     const addr = address
     
     // Prepare txn vars
-    const appAddr       = subscription.addr
+    const appAddr       = (subscription as Subscription).addr
     const appArgs: Uint8Array[] = [new Uint8Array(Buffer.from("subscribe"))]
 
     const sp        = await client.getTransactionParams().do()
