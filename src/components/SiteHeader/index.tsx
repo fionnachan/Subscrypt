@@ -67,33 +67,77 @@ const SiteHeader: React.FC = () => {
             <span className="site-name">Subscrypt</span>
           </Link>
         </div>
-        {!address ?
-          <Button
-            appearance="primary"
-            onClick={() => dispatch(setIsModalOpen(true))}
+        <div className="site-header-right">
+          <Popover
+            position={Position.BOTTOM_LEFT}
+            content={
+              <Menu>
+                <Menu.Group>
+                  <Menu.Item>
+                    <Link to="/supporter/dashboard">
+                      Dashboard
+                    </Link>
+                  </Menu.Item>
+                  <Menu.Item>
+                    <Link to="/supporter">
+                      Subscribe to Plan
+                    </Link>
+                  </Menu.Item>
+                </Menu.Group>
+              </Menu>
+            }
           >
-            Connect Wallet
-          </Button>
-        : <div className="header-address-info">
-            {loading ? null : <span className="wallet-amount">
-              {formatBigNumWithDecimals(nativeCurrency.amount, nativeCurrency.decimals)} {nativeCurrency.unitName || "units"}
-            </span>}
-            <span className="header-account">{ellipseAddress(address)}</span>
-            <Popover
-              position={Position.BOTTOM_RIGHT}
-              content={
-                <Menu>
-                  <Menu.Group>
-                    <Menu.Item onSelect={() => dispatch(killSession())}>
-                      Disconnect
-                    </Menu.Item>
-                  </Menu.Group>
-                </Menu>
-              }
+            <span className="menu-trigger">Supporter</span>
+          </Popover>
+          <Popover
+            position={Position.BOTTOM_LEFT}
+            content={
+              <Menu>
+                <Menu.Group>
+                  <Menu.Item>
+                    <Link to="/creator/dashboard">
+                      Dashboard
+                    </Link>
+                  </Menu.Item>
+                  <Menu.Item>
+                    <Link to="/creator">
+                      Create Plan
+                    </Link>
+                  </Menu.Item>
+                </Menu.Group>
+              </Menu>
+            }
+          >
+            <span className="menu-trigger">Creator</span>
+          </Popover>
+          {!address ?
+            <Button
+              appearance="primary"
+              onClick={() => dispatch(setIsModalOpen(true))}
             >
-              <IconButton icon={MenuIcon} marginRight={16} appearance="minimal" className="disconnect-button" />
-            </Popover>
-        </div>}
+              Connect Wallet
+            </Button>
+          : <div className="header-address-info">
+              {loading ? null : <span className="wallet-amount">
+                {formatBigNumWithDecimals(nativeCurrency.amount, nativeCurrency.decimals)} {nativeCurrency.unitName || "units"}
+              </span>}
+              <span className="header-account">{ellipseAddress(address)}</span>
+              <Popover
+                position={Position.BOTTOM_RIGHT}
+                content={
+                  <Menu>
+                    <Menu.Group>
+                      <Menu.Item onSelect={() => dispatch(killSession())}>
+                        Disconnect
+                      </Menu.Item>
+                    </Menu.Group>
+                  </Menu>
+                }
+              >
+                <IconButton icon={MenuIcon} marginRight={16} appearance="minimal" className="disconnect-button" />
+              </Popover>
+          </div>}
+        </div>
       </div>
     </div>
   );

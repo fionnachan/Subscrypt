@@ -139,7 +139,7 @@ export async function getSubscribeTransactions(
 // Creates a subscription grouped transaction.
 // The grouped transaction consists of a payment in the amount they're paying
 // and an application call to update the state of the auction
-export async function subscribePlan(appId: number, amt: number, address: string, walletType: string, connector: any): Promise<any> {
+export async function subscribePlan(appId: number, amt: number, months: number, address: string, walletType: string, connector: any): Promise<any> {
     // Create transaction
     const client  = getAlgodClient()
 
@@ -151,7 +151,7 @@ export async function subscribePlan(appId: number, amt: number, address: string,
     
     // Prepare txn vars
     const appAddr       = subscription.addr
-    const appArgs: Uint8Array[] = [new Uint8Array(Buffer.from("bid"))]
+    const appArgs: Uint8Array[] = [new Uint8Array(Buffer.from("bid")), encodeUint64(months)]
 
     const sp        = await client.getTransactionParams().do()
 
@@ -171,7 +171,14 @@ export async function subscribePlan(appId: number, amt: number, address: string,
 }
 
 // Creates the subscription withe the parameters passed. 
-export async function createSubscriptionPlan(plan_price: number, start: number, address: string, walletType: string, connector: any): Promise<number>{
+export async function createSubscriptionPlan(
+                                            creatorName: string,
+                                            planName: string,
+                                            planDesc: string,
+                                            planPrice: number,
+                                            address: string,
+                                            walletType: string,
+                                            connector: any): Promise<number>{
 
     const client = getAlgodClient()
 
@@ -179,16 +186,16 @@ export async function createSubscriptionPlan(plan_price: number, start: number, 
     const approval  = new Uint8Array(Buffer.from(programs.approval, "base64"))
     const clear     = new Uint8Array(Buffer.from(programs.clear, "base64"))
 
-
     // Prepare app args to initialize the subscription
     const addr      = address
     console.log("addr:", decodeAddress(addr).publicKey)
-    console.log("start:", start)
-    console.log("price:", algosdk.algosToMicroalgos(plan_price))
+    console.log("price:", algosdk.algosToMicroalgos(planPrice))
     const args      = [
         decodeAddress(addr).publicKey,
-        encodeUint64(start),
-        encodeUint64(algosdk.algosToMicroalgos(plan_price)),
+        new Uint8Array(Buffer.from(creatorName)),
+        new Uint8Array(Buffer.from(planName)),
+        new Uint8Array(Buffer.from(planDesc)),
+        encodeUint64(algosdk.algosToMicroalgos(planPrice)),
     ]
 
     const sp = await client.getTransactionParams().do()
@@ -199,9 +206,9 @@ export async function createSubscriptionPlan(plan_price: number, start: number, 
         appOnComplete: OnApplicationComplete.NoOpOC,
         appApprovalProgram: approval,
         appClearProgram: clear,
-        appGlobalInts: 7,
-        appGlobalByteSlices: 2,
-        appLocalInts: 0,
+        appGlobalInts: 1,
+        appGlobalByteSlices: 4,
+        appLocalInts: 1,
         appLocalByteSlices: 0,
         appArgs: args,
         suggestedParams: sp
@@ -306,4 +313,32 @@ async function waitForConfirmation(txId: string, timeout: number): Promise<any> 
 
     /* eslint-enable no-await-in-loop */
     throw new Error(`Transaction not confirmed after ${timeout} rounds!`);
+}
+
+// read local state of application from user account
+export async function readLocalState(address: string, appId: number){
+    const client = getAlgodClient()
+    let accountInfoResponse = await client.accountInformation(address).do();
+    for (let i = 0; i < accountInfoResponse['apps-local-state'].length; i++) { 
+        if (accountInfoResponse['apps-local-state'][i].id == appId) {
+            console.log("User's local state:");
+            for (let n = 0; n < accountInfoResponse['apps-local-state'][i][`key-value`].length; n++) {
+                console.log(accountInfoResponse['apps-local-state'][i][`key-value`][n]);
+            }
+        }
+    }
+}
+
+// read global state of application
+export async function readGlobalState(address: string, appId: number){
+    const client = getAlgodClient()
+    let accountInfoResponse = await client.accountInformation(address).do();
+    for (let i = 0; i < accountInfoResponse['created-apps'].length; i++) { 
+        if (accountInfoResponse['created-apps'][i].id == appId) {
+            console.log("Application's global state:");
+            for (let n = 0; n < accountInfoResponse['created-apps'][i]['params']['global-state'].length; n++) {
+                console.log(accountInfoResponse['created-apps'][i]['params']['global-state'][n]);
+            }
+        }
+    }
 }

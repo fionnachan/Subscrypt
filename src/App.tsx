@@ -15,7 +15,10 @@ import Home from './components/SiteBody/home';
 import algowallet from "./assets/algorandwallet.svg";
 import myalgo from "./assets/myalgo.svg";
 import algosigner from "./assets/algosigner.svg";
-import CreatorHome from './components/Creator/home';
+import CreatePlan from './components/Creator/createPlan';
+import CreatorDashboard from './components/Creator/dashboard';
+import SubscribeView from './components/Supporter/subscribe';
+import SupporterDashboard from './components/Supporter/dashboard';
 
 const App: React.FC = () => {
   const isModalOpen = useSelector(selectIsModalOpen);
@@ -52,12 +55,13 @@ const App: React.FC = () => {
   return (
     <div className="site-layout">
       <SiteHeader/>
-      <div className="site-body">
-        <Routes>
-          <Route index element={<Home/>} />
-          <Route path="creator" element={<CreatorHome/>}/>
-        </Routes>
-      </div>
+      <Routes>
+        <Route index element={<Home/>} />
+        <Route path="creator" element={<CreatePlan/>}/>
+        <Route path="creator/dashboard" element={<CreatorDashboard/>}/>
+        <Route path="supporter" element={<SubscribeView/>}/>
+        <Route path="supporter/dashboard" element={<SupporterDashboard/>}/>
+      </Routes>
       <div className="footer">Subscrypt ©2021 Created with 💖</div>
       <Dialog
         isShown={isModalOpen}

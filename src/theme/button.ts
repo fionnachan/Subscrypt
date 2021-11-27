@@ -25,6 +25,13 @@ const button = {
       },
     },
   },
+  sizes: {
+    small: {
+      height: "1.5rem",
+      lineHeight: "1",
+      fontSize: "var(--font-size-xs)",
+    }
+  }
 }
 
 export default button;

@@ -9,7 +9,7 @@ const Home: React.FC = () => {
   const loading = useSelector(selectFetching);
 
   return (
-    <>
+    <div className="site-body">
       <h1>Welcome to Subscrypt</h1>
       <p className="desc">
         We are a decentralised subscription service for creators and their supporters.
@@ -39,7 +39,7 @@ const Home: React.FC = () => {
             </p>
           </div>
       }
-    </>
+    </div>
   )
 }
 
