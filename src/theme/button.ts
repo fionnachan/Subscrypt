@@ -30,6 +30,10 @@ const button = {
       height: "1.5rem",
       lineHeight: "1",
       fontSize: "var(--font-size-xs)",
+    },
+    large: {
+      height: "3rem",
+      fontSize: "var(--font-size-l)",
     }
   }
 }

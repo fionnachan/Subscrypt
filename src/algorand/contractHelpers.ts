@@ -13,11 +13,12 @@ import programs from "./contract_binaries";
 
 // The keys to the global state parameters to the application
 export enum StateKeys  {
-    seller_key            = "seller",
-
-    start_time_key        = "start",
-
-    plan_price_key        = "plan_price",
+    creator_key            = "creator",
+    creator_name_key        = "creator_name",
+    plan_name_key        = "plan_name",
+    plan_desc_key        = "plan_desc",
+    plan_monthly_price_key        = "plan_monthly_price",
+    created_on_key        = "created_on",
 }
 
 // Represents the global-state and global-state-delta we get back from
@@ -168,6 +169,8 @@ export async function subscribePlan(appId: number, amt: number, months: number, 
     const result = await sendWait(signed)
 
     if(result['pool-error']) throw new Error("Place Bid Failed: "+result['pool-error'])
+
+    return result;
 }
 
 // Creates the subscription withe the parameters passed. 
@@ -207,7 +210,7 @@ export async function createSubscriptionPlan(
         appApprovalProgram: approval,
         appClearProgram: clear,
         appGlobalInts: 1,
-        appGlobalByteSlices: 4,
+        appGlobalByteSlices: 5,
         appLocalInts: 1,
         appLocalByteSlices: 0,
         appArgs: args,
@@ -265,6 +268,8 @@ export async function closeSubscription(appId: number, address: string, walletTy
     const result = await sendWait([signed])
 
     if(result['pool-error']) throw new Error("Failed to close subscription: "+result['pool-error'])
+
+    return result;
 }
 
 // Utility function to block after sending the raw transaction for 3 rounds in this case
@@ -329,16 +334,43 @@ export async function readLocalState(address: string, appId: number){
     }
 }
 
-// read global state of application
-export async function readGlobalState(address: string, appId: number){
-    const client = getAlgodClient()
-    let accountInfoResponse = await client.accountInformation(address).do();
-    for (let i = 0; i < accountInfoResponse['created-apps'].length; i++) { 
-        if (accountInfoResponse['created-apps'][i].id == appId) {
-            console.log("Application's global state:");
-            for (let n = 0; n < accountInfoResponse['created-apps'][i]['params']['global-state'].length; n++) {
-                console.log(accountInfoResponse['created-apps'][i]['params']['global-state'][n]);
-            }
-        }
+export async function getUserCreatedPlans(address: string){
+  const client = getAlgodClient()
+  let accountInfoResponse = await client.accountInformation(address).do();
+  let createdApps = accountInfoResponse['created-apps'];
+  let userCreatedSubscriptionPlans: any = [];
+  createdApps.forEach((appInfo: any) => {
+    const obj = StateToObj(appInfo["params"]["global-state"]);
+    const processedObj: any = processObj(obj);
+    if (processedObj["created_on"] === "Subscrypt") {
+      userCreatedSubscriptionPlans.push({
+        appId: appInfo.id,
+        globalState: processedObj
+      })
     }
+  })
+  console.log("userCreatedSubscriptionPlans: ", userCreatedSubscriptionPlans)
+  return userCreatedSubscriptionPlans;
+}
+
+function processObj(obj: Obj) {
+  const processedObj: any = {};
+  for (const [key, value] of Object.entries(obj)) {
+    if (key != "creator" && value.i === 0) {
+      processedObj[key] = new TextDecoder().decode(value.b);
+    } else {
+      processedObj[key] = value;
+    }
+  }
+
+  return processedObj;
+}
+
+export function convertFromUint8ToInt(Uint8Arr: Uint8Array) {
+  var length = Uint8Arr.length;
+
+  let buffer = Buffer.from(Uint8Arr);
+  var result = buffer.readUIntBE(0, length);
+
+  return result;
 }

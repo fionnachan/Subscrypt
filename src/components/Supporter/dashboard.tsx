@@ -2,7 +2,7 @@ import { Button, Table, TextareaField, TextInputField } from 'evergreen-ui';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAddress, selectConnected, selectWalletType, selectConnector, selectFetching } from '../../features/walletSlice';
-import { closeSubscription, createSubscriptionPlan, readGlobalState, setupSubscription, subscribePlan } from '../../algorand/contractHelpers';
+import { closeSubscription, createSubscriptionPlan, setupSubscription, subscribePlan } from '../../algorand/contractHelpers';
 import { setIsNotificationOpen, setNotificationContent, setNotificationTitle } from '../../features/applicationSlice';
 import LoadingIcon from '../LoadingIcon';
 

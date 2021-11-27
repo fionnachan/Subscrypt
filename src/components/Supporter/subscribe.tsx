@@ -2,7 +2,7 @@ import { Button, TextareaField, TextInputField } from 'evergreen-ui';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAddress, selectConnected, selectWalletType, selectConnector, selectFetching } from '../../features/walletSlice';
-import { closeSubscription, createSubscriptionPlan, readGlobalState, setupSubscription, subscribePlan } from '../../algorand/contractHelpers';
+import { subscribePlan } from '../../algorand/contractHelpers';
 import { setIsNotificationOpen, setNotificationContent, setNotificationTitle } from '../../features/applicationSlice';
 import LoadingIcon from '../LoadingIcon';
 
@@ -12,7 +12,7 @@ const SubscribeView: React.FC = () => {
   const address = useSelector(selectAddress);
   const walletType = useSelector(selectWalletType);
   const connector = useSelector(selectConnector);
-  const [appId, setAppId] = useState(0);
+  const [appId, setAppId] = useState("");
   const [months, setMonths] = useState("");
   const [amount, setAmount] = useState(0);
 
@@ -22,24 +22,23 @@ const SubscribeView: React.FC = () => {
     if (!appId || !months) {
       return;
     }
-    const subscriptionId = await subscribePlan(
-                                appId,
-                                amount,
-                                parseInt(months),
-                                address,
-                                walletType,
-                                connector);
-
-    await setupSubscription(subscriptionId, address, walletType, connector)
+    await subscribePlan(
+            parseInt(appId),
+            amount,
+            parseInt(months),
+            address,
+            walletType,
+            connector
+        )
         .then(result => {
           console.log("result: ", result)
           dispatch(setIsNotificationOpen(true));
-          dispatch(setNotificationTitle("Subscription Setup Success"))
+          dispatch(setNotificationTitle("Subscription Success"))
           dispatch(setNotificationContent("Confirmed at round "+result["confirmed-round"]))
         })
         .catch(error => {
           dispatch(setIsNotificationOpen(true));
-          dispatch(setNotificationTitle("Subscription Setup Error"))
+          dispatch(setNotificationTitle("Subscription Error"))
           dispatch(setNotificationContent(error))
         });
   }
@@ -60,10 +59,10 @@ const SubscribeView: React.FC = () => {
               value={appId}
             />
             <TextInputField
-            label="Number of Months"
-            description="Enter the number of months you'd like to be subscribed for."
-            onChange={(event: any) => setMonths(event.target.value)}
-            value={""}
+              label="Number of Months"
+              description="Enter the number of months you'd like to be subscribed for."
+              onChange={(event: any) => setMonths(event.target.value)}
+              value={months}
             />
             <Button appearance="primary" onClick={subscribe}>Subscribe</Button>
           </>

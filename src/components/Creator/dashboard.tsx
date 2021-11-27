@@ -1,10 +1,11 @@
-import { Button, TextareaField, TextInputField } from 'evergreen-ui';
+import { Button, Table, TextareaField, TextInputField } from 'evergreen-ui';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAddress, selectConnected, selectWalletType, selectConnector, selectFetching } from '../../features/walletSlice';
-import { closeSubscription, createSubscriptionPlan, readGlobalState, setupSubscription } from '../../algorand/contractHelpers';
+import { closeSubscription, convertFromUint8ToInt, createSubscriptionPlan, getUserCreatedPlans, setupSubscription } from '../../algorand/contractHelpers';
 import { setIsNotificationOpen, setNotificationContent, setNotificationTitle } from '../../features/applicationSlice';
 import LoadingIcon from '../LoadingIcon';
+import algosdk from 'algosdk';
 
 const CreatorDashboard: React.FC = () => {
   const connected = useSelector(selectConnected);
@@ -12,48 +13,46 @@ const CreatorDashboard: React.FC = () => {
   const address = useSelector(selectAddress);
   const walletType = useSelector(selectWalletType);
   const connector = useSelector(selectConnector);
-  const [creatorName, setCreatorName] = useState("");
-  const [planName, setPlanName] = useState("");
-  const [planDesc, setPlanDesc] = useState("");
-  const [price, setPrice] = useState("");
-  const [wtf, setWtf] = useState("");
+  const [plans, setPlans] = useState([]);
 
   const dispatch = useDispatch();
 
-  const createPlan = async() => {
-    if (!creatorName || !planName || !planDesc || !price) {
+  const onDeleteError = (error: any) => {
+    dispatch(setIsNotificationOpen(true));
+    dispatch(setNotificationTitle("Delete Plan Error"))
+    dispatch(setNotificationContent("Please try again."))
+  }
+
+  const deletePlan = async(appId: string) => {
+    if (!address || !walletType || !connector) {
       return;
     }
-    const subscriptionId = await createSubscriptionPlan(
-                                creatorName,
-                                planName,
-                                planDesc,
-                                parseInt(price),
-                                address,
-                                walletType,
-                                connector);
 
-    await setupSubscription(subscriptionId, address, walletType, connector)
+    await closeSubscription(parseInt(appId), address, walletType, connector)
         .then(result => {
-          console.log("result: ", result)
-          dispatch(setIsNotificationOpen(true));
-          dispatch(setNotificationTitle("Subscription Setup Success"))
-          dispatch(setNotificationContent("Confirmed at round "+result["confirmed-round"]))
+          try {
+            console.log("result: ", result)
+            dispatch(setIsNotificationOpen(true));
+            dispatch(setNotificationTitle("Delete Plan Successfully"))
+            dispatch(setNotificationContent("Confirmed at round "+result["confirmed-round"]))
+          }
+          catch(error) {
+            onDeleteError(error);
+          }
         })
         .catch(error => {
-          dispatch(setIsNotificationOpen(true));
-          dispatch(setNotificationTitle("Subscription Setup Error"))
-          dispatch(setNotificationContent(error))
+          onDeleteError(error);
         });
   }
 
   useEffect(() => {
-      return;
     if (address.length > 0 && walletType && connector) {
       console.log("address: ",address)
-      closeSubscription(47709978, address, walletType, connector);
+      getUserCreatedPlans(address)
+        .then(result => {
+          setPlans(result);
+        });
     }
-    // setWtf(_wtf);
   }, [address, walletType, connector]);
 
   return (
@@ -64,9 +63,28 @@ const CreatorDashboard: React.FC = () => {
         </h2>
         { loading ? <LoadingIcon/> : 
           connected ? 
-          <>
-            <Button appearance="primary" onClick={createPlan}>Create Plan</Button>
-          </>
+          <Table>
+            <Table.Head>
+              <Table.SearchHeaderCell />
+              <Table.TextHeaderCell>Active Subscription Plan ID</Table.TextHeaderCell>
+              <Table.TextHeaderCell>Subscribers</Table.TextHeaderCell>
+              <Table.TextHeaderCell>Monthly Price</Table.TextHeaderCell>
+              <Table.TextHeaderCell>Actions</Table.TextHeaderCell>
+            </Table.Head>
+            <Table.VirtualBody height={240}>
+              {plans.map((plan: any) => (
+                <Table.Row key={plan.appId}>
+                  <Table.TextCell>{plan.globalState.plan_name}</Table.TextCell>
+                  <Table.TextCell>{plan.appId}</Table.TextCell>
+                  <Table.TextCell isNumber>{plan.globalState.numOfSubscribers || 0}</Table.TextCell>
+                  <Table.TextCell isNumber>{algosdk.microalgosToAlgos(plan.globalState.plan_monthly_price.i)} Algo</Table.TextCell>
+                  <Table.TextCell>
+                    <Button size="small" onClick={() => deletePlan(plan.appId)}>Delete</Button>
+                  </Table.TextCell>
+                </Table.Row>
+              ))}
+            </Table.VirtualBody>
+          </Table>
           : <p className="reminder-text">Please connect to your wallet first.</p>
         }
       </div>

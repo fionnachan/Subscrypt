@@ -114,6 +114,7 @@ const SiteHeader: React.FC = () => {
             <Button
               appearance="primary"
               onClick={() => dispatch(setIsModalOpen(true))}
+              size="medium"
             >
               Connect Wallet
             </Button>
