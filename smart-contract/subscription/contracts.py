@@ -50,12 +50,10 @@ def approval_program():
     )
 
     on_subscribe_txn_index = Txn.group_index() - Int(1)
-    number_of_months = Btoi(Txn.application_args[1]) # arg = Bytes("months")
+    number_of_months = Gtxn[on_subscribe_txn_index].amount() / App.globalGet(plan_monthly_price_key)
     on_subscribe = Seq(
         Assert(
             And(
-                # the subscription plan has been set up
-                # the actual payment is before the app call
                 Gtxn[on_subscribe_txn_index].type_enum() == TxnType.Payment,
                 Gtxn[on_subscribe_txn_index].sender() == Txn.sender(),
                 Gtxn[on_subscribe_txn_index].receiver()
@@ -64,18 +62,12 @@ def approval_program():
                 number_of_months >= Int(1)
             )
         ),
-        # number_of_months_key is Txn.application_args[1]
-        If(
-            Gtxn[on_subscribe_txn_index].amount()
-            >= App.globalGet(plan_monthly_price_key) * number_of_months
-        ).Then(
-            Seq(
-                App.globalPut(num_subscribers_key, App.globalGet(num_subscribers_key) + Int(1)),
-                App.localPut(Int(0), Bytes("paid"), Gtxn[on_subscribe_txn_index].amount()),
-                App.localPut(Int(0), Bytes("months_subscribed"), Txn.application_args[1]),
-                App.localPut(Int(0), Bytes("subscription_start_date"), Global.latest_timestamp()),
-                Approve(),
-            ),
+        Seq(
+            App.globalPut(num_subscribers_key, App.globalGet(num_subscribers_key) + Int(1)),
+            App.localPut(Int(0), Bytes("paid"), Gtxn[on_subscribe_txn_index].amount()),
+            App.localPut(Int(0), Bytes("months_subscribed"), number_of_months),
+            App.localPut(Int(0), Bytes("subscription_start_date"), Global.latest_timestamp()),
+            Approve(),
         ),
         Reject(),
     )

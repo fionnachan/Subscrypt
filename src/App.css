@@ -334,3 +334,7 @@ a {
   margin-left: var(--space-s);
   margin-bottom: var(--space-xxl);
 }
+
+.form-row span.price {
+  margin-left: 0;
+}

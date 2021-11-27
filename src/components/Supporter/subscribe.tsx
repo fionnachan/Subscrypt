@@ -2,9 +2,10 @@ import { Button, TextareaField, TextInputField } from 'evergreen-ui';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAddress, selectConnected, selectWalletType, selectConnector, selectFetching } from '../../features/walletSlice';
-import { subscribePlan } from '../../algorand/contractHelpers';
+import { getAppGlobalState, StateToObj, subscribePlan } from '../../algorand/contractHelpers';
 import { setIsNotificationOpen, setNotificationContent, setNotificationTitle } from '../../features/applicationSlice';
 import LoadingIcon from '../LoadingIcon';
+import algosdk from 'algosdk';
 
 const SubscribeView: React.FC = () => {
   const connected = useSelector(selectConnected);
@@ -15,6 +16,7 @@ const SubscribeView: React.FC = () => {
   const [appId, setAppId] = useState("");
   const [months, setMonths] = useState("");
   const [amount, setAmount] = useState(0);
+  const [actualPayAmount, setActualPayAmount] = useState(0);
 
   const dispatch = useDispatch();
 
@@ -22,10 +24,10 @@ const SubscribeView: React.FC = () => {
     if (!appId || !months) {
       return;
     }
+    const _appId = parseInt(appId);
     await subscribePlan(
-            parseInt(appId),
-            amount,
-            parseInt(months),
+            _appId,
+            actualPayAmount,
             address,
             walletType,
             connector
@@ -39,9 +41,29 @@ const SubscribeView: React.FC = () => {
         .catch(error => {
           dispatch(setIsNotificationOpen(true));
           dispatch(setNotificationTitle("Subscription Error"))
-          dispatch(setNotificationContent(error))
+          dispatch(setNotificationContent("Please try again."))
         });
   }
+
+  useEffect(() => {
+    if (appId.length > 0) {
+      getAppGlobalState(parseInt(appId))
+        .then(result => {
+          const _amount = algosdk.microalgosToAlgos(StateToObj(result)["plan_monthly_price"].i);
+          setAmount(_amount);
+        });
+    } else {
+      setAmount(0);
+    }
+  }, [appId]);
+
+  useEffect(() => {
+    if (parseInt(months) > 0 && amount > 0) {
+      // 0.001 tx fee for opt-in and 0.001 tx fee for payment
+      const _actual = parseInt(months) * amount;
+      setActualPayAmount(_actual);
+    }
+  }, [months, amount]);
 
   return (
     <div className="site-body">
@@ -64,6 +86,20 @@ const SubscribeView: React.FC = () => {
               onChange={(event: any) => setMonths(event.target.value)}
               value={months}
             />
+            {
+              amount ? 
+              <div className="form-row">
+                <span className="price">Monthly Price: {amount || ""} Algo</span>
+              </div>
+              : null
+            }
+            {
+              months && amount ?
+              <div className="form-row">
+                <span className="price">Total: {actualPayAmount} Algo</span>
+              </div>
+              : null
+            }
             <Button appearance="primary" onClick={subscribe}>Subscribe</Button>
           </>
           : <p className="reminder-text">Please connect to your wallet first.</p>

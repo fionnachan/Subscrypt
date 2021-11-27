@@ -2,7 +2,7 @@ import { Button, Table, TextareaField, TextInputField } from 'evergreen-ui';
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { selectAddress, selectConnected, selectWalletType, selectConnector, selectFetching } from '../../features/walletSlice';
-import { closeSubscription, convertFromUint8ToInt, createSubscriptionPlan, getUserCreatedPlans, setupSubscription } from '../../algorand/contractHelpers';
+import { closeSubscription, getUserCreatedPlans } from '../../algorand/contractHelpers';
 import { setIsNotificationOpen, setNotificationContent, setNotificationTitle } from '../../features/applicationSlice';
 import LoadingIcon from '../LoadingIcon';
 import algosdk from 'algosdk';
@@ -33,7 +33,7 @@ const CreatorDashboard: React.FC = () => {
           try {
             console.log("result: ", result)
             dispatch(setIsNotificationOpen(true));
-            dispatch(setNotificationTitle("Delete Plan Successfully"))
+            dispatch(setNotificationTitle("Deleted Plan Successfully"))
             dispatch(setNotificationContent("Confirmed at round "+result["confirmed-round"]))
           }
           catch(error) {
@@ -66,7 +66,8 @@ const CreatorDashboard: React.FC = () => {
           <Table>
             <Table.Head>
               <Table.SearchHeaderCell />
-              <Table.TextHeaderCell>Active Subscription Plan ID</Table.TextHeaderCell>
+              <Table.TextHeaderCell>Active Subscription Plan</Table.TextHeaderCell>
+              <Table.TextHeaderCell>Details</Table.TextHeaderCell>
               <Table.TextHeaderCell>Subscribers</Table.TextHeaderCell>
               <Table.TextHeaderCell>Monthly Price</Table.TextHeaderCell>
               <Table.TextHeaderCell>Actions</Table.TextHeaderCell>
@@ -74,8 +75,9 @@ const CreatorDashboard: React.FC = () => {
             <Table.VirtualBody height={240}>
               {plans.map((plan: any) => (
                 <Table.Row key={plan.appId}>
-                  <Table.TextCell>{plan.globalState.plan_name}</Table.TextCell>
                   <Table.TextCell>{plan.appId}</Table.TextCell>
+                  <Table.TextCell>{plan.globalState.plan_name}</Table.TextCell>
+                  <Table.TextCell>{plan.globalState.plan_desc}</Table.TextCell>
                   <Table.TextCell isNumber>{plan.globalState.numOfSubscribers || 0}</Table.TextCell>
                   <Table.TextCell isNumber>{algosdk.microalgosToAlgos(plan.globalState.plan_monthly_price.i)} Algo</Table.TextCell>
                   <Table.TextCell>

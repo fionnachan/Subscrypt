@@ -139,38 +139,58 @@ export async function getSubscribeTransactions(
 
 // Creates a subscription grouped transaction.
 // The grouped transaction consists of a payment in the amount they're paying
-// and an application call to update the state of the auction
-export async function subscribePlan(appId: number, amt: number, months: number, address: string, walletType: string, connector: any): Promise<any> {
+// and an application call to update the state of the subscription plan contract
+export async function subscribePlan(appId: number, amt: number, address: string, walletType: string, connector: any): Promise<any> {
     // Create transaction
     const client  = getAlgodClient()
 
     // Get the latest info for the subscription
     const subscription = await getSubscription(appId)
 
-    // Get the bidders account
+    // Get the supporter's account
     const addr = address
     
     // Prepare txn vars
     const appAddr       = subscription.addr
-    const appArgs: Uint8Array[] = [new Uint8Array(Buffer.from("bid")), encodeUint64(months)]
+    const appArgs: Uint8Array[] = [new Uint8Array(Buffer.from("subscribe"))]
 
     const sp        = await client.getTransactionParams().do()
 
+    console.log("IN HERE")
+
     const pay_txn   = algosdk.makePaymentTxnWithSuggestedParams(
         addr, appAddr, algosdk.algosToMicroalgos(amt), undefined, undefined, sp
-    )
+    );
+
+    const app_opt_in_txn = algosdk.makeApplicationOptInTxn(
+      addr, sp, appId
+    );
+
     const app_txn   = algosdk.makeApplicationNoOpTxn(
         addr, sp, appId, appArgs
-    )
+    );
 
-    algosdk.assignGroupID([pay_txn, app_txn])
+    const txns = [app_opt_in_txn, pay_txn, app_txn];
 
-    const signed = await sign([pay_txn, app_txn], walletType, connector)
+    algosdk.assignGroupID(txns)
+
+    const signed = await sign(txns, walletType, connector)
     const result = await sendWait(signed)
 
     if(result['pool-error']) throw new Error("Place Bid Failed: "+result['pool-error'])
 
     return result;
+}
+
+async function ensureOptedInApp(addr: string, appId: number) {
+  const client = getAlgodClient()
+  const ai = await client.accountInformation(addr).do()
+
+  console.log("account info: ", ai)
+
+  // Already opted in
+  // if(ai['apps'].some((a: any)=>{ return a['app-id'] == appId}))
+  //     return
 }
 
 // Creates the subscription withe the parameters passed. 
@@ -209,9 +229,9 @@ export async function createSubscriptionPlan(
         appOnComplete: OnApplicationComplete.NoOpOC,
         appApprovalProgram: approval,
         appClearProgram: clear,
-        appGlobalInts: 1,
+        appGlobalInts: 2,
         appGlobalByteSlices: 5,
-        appLocalInts: 1,
+        appLocalInts: 3,
         appLocalByteSlices: 0,
         appArgs: args,
         suggestedParams: sp
@@ -334,6 +354,14 @@ export async function readLocalState(address: string, appId: number){
     }
 }
 
+// read global state of application
+export async function getAppGlobalState(appId: number){
+  const client = getAlgodClient()
+  let appInfoResponse = await client.getApplicationByID(appId).do();
+  console.log("appInfoResponse: ",appInfoResponse)
+  return appInfoResponse["params"]["global-state"];
+}
+
 export async function getUserCreatedPlans(address: string){
   const client = getAlgodClient()
   let accountInfoResponse = await client.accountInformation(address).do();
@@ -364,13 +392,4 @@ function processObj(obj: Obj) {
   }
 
   return processedObj;
-}
-
-export function convertFromUint8ToInt(Uint8Arr: Uint8Array) {
-  var length = Uint8Arr.length;
-
-  let buffer = Buffer.from(Uint8Arr);
-  var result = buffer.readUIntBE(0, length);
-
-  return result;
 }

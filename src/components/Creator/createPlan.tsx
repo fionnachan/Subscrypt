@@ -39,7 +39,7 @@ const CreatorHome: React.FC = () => {
           setAppId(_appId);
           dispatch(setIsNotificationOpen(true));
           dispatch(setNotificationTitle("Subscription Setup Success"))
-          dispatch(setNotificationContent("Confirmed at round "+result["confirmed-round"]+". Your subscription plan's app ID is "+appId+"."))
+          dispatch(setNotificationContent("Confirmed at round "+result["confirmed-round"]+". Your subscription plan's app ID is "+_appId+"."))
         })
         .catch(error => {
           dispatch(setIsNotificationOpen(true));

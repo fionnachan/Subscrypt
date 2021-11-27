@@ -87,7 +87,7 @@ const SupporterDashboard: React.FC = () => {
                   <Table.TextCell isNumber>{profile.paid}</Table.TextCell>
                   <Table.TextCell>{profile.expiryDate}</Table.TextCell>
                   <Table.TextCell>
-                    <Button size="small">Cancel</Button>
+                    <Button size="small">Unsubscribe</Button>
                   </Table.TextCell>
                 </Table.Row>
               ))}
