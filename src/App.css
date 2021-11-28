@@ -171,12 +171,12 @@ a {
 
 .wallet-button {
   display: flex;
-  justify-content: flex-start;
+  justify-content: flex-start !important;
   align-items: center;
   width: 100%;
   height: auto;
-  font-size: var(--font-size-l);
-  padding: var(--space-s) var(--space-m);
+  font-size: var(--font-size-l) !important;
+  padding: var(--space-s) var(--space-m) !important;
   margin-bottom: var(--space-xxl);
 }
 
@@ -203,6 +203,10 @@ a {
 
 .site-body.dashboard-view {
   max-width: var(--max-width);
+}
+
+.site-body.dashboard-view .reminder-text {
+  text-align: center;
 }
 
 .site-body .desc {
